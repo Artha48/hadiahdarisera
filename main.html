@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pixel Christmas 🎄</title>
+    <!-- Import Font Pixel -->
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <!-- Library untuk Screenshot -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: radial-gradient(circle at center, #0a1931 0%, #000c18 100%);
+            font-family: 'Press Start 2P', cursive;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            color: white;
+        }
+
+        #bgCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .snow-ground {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 80px;
+            background: white;
+            z-index: 5;
+            border-top: 6px solid #bdc3c7;
+        }
+
+        .container {
+            position: relative;
+            z-index: 10;
+            width: 95%;
+            max-width: 700px;
+            text-align: center;
+            padding-bottom: 80px;
+            transition: opacity 0.5s;
+        }
+
+        h1 {
+            font-size: 0.9rem;
+            color: #f1c40f;
+            text-shadow: 3px 3px 0px #000;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .instruction {
+            font-size: 0.45rem;
+            margin-bottom: 20px;
+            line-height: 1.8;
+            color: #ecf0f1;
+            text-shadow: 2px 2px 0px #000;
+        }
+
+        .scene {
+            position: relative;
+            margin: 0 auto;
+            width: 180px;
+            height: 180px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+        }
+
+        .tree {
+            font-size: 70px;
+            margin-bottom: -10px;
+            user-select: none;
+        }
+
+        .gift-pile {
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            gap: 10px;
+            z-index: 6;
+        }
+
+        .gift {
+            font-size: 30px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .gift:hover {
+            transform: scale(1.1) translateY(-10px);
+        }
+
+        /* Modal Input */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 100;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(4px);
+        }
+
+        .modal-content {
+            background: #2c3e50;
+            padding: 25px;
+            border: 6px solid #f1c40f;
+            width: 85%;
+            max-width: 350px;
+            text-align: center;
+            box-shadow: 8px 8px 0px #000;
+        }
+
+        .hint {
+            font-size: 0.4rem;
+            color: #bdc3c7;
+            margin: 15px 0;
+            line-height: 1.5;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 4px solid #000;
+            background: #fff;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 0.5rem;
+            text-align: center;
+            outline: none;
+        }
+
+        .btn-open {
+            background: #e74c3c;
+            color: white;
+            padding: 10px;
+            border: 4px solid #000;
+            cursor: pointer;
+            width: 100%;
+            font-size: 0.5rem;
+            box-shadow: 4px 4px 0px #c0392b;
+            margin-bottom: 10px;
+        }
+
+        /* Surprise Area - Ukuran Disesuaikan agar Latar Tetap Kelihatan */
+        #surprise-area {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80%; /* Dikecilkan */
+            max-width: 380px; 
+            background: rgba(236, 240, 241, 0.9); /* Sedikit transparan */
+            padding: 15px;
+            border: 5px solid #000;
+            z-index: 110;
+            color: #2c3e50;
+            text-align: center;
+            box-shadow: 8px 8px 0px #000;
+        }
+
+        .digital-art-container {
+            border: 3px solid #000;
+            margin: 8px 0;
+            background: #000;
+            max-height: 40vh; /* Dibbatasi agar tidak penuh layar HP */
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .digital-art-container img {
+            max-width: 100%;
+            max-height: 100%;
+            height: auto;
+            image-rendering: pixelated;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .btn-action {
+            flex: 1;
+            padding: 8px;
+            font-size: 0.35rem;
+            border: 3px solid #000;
+            cursor: pointer;
+            font-family: 'Press Start 2P', cursive;
+        }
+
+        .btn-ss { background: #3498db; color: white; }
+        .btn-share { background: #2ecc71; color: white; }
+
+        .watermark {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            font-size: 0.45rem;
+            z-index: 20;
+            color: #fff;
+            animation: shine 2s infinite linear;
+            text-shadow: 2px 2px 0px #000;
+        }
+
+        @keyframes shine {
+            0%, 100% { color: #fff; text-shadow: 0 0 5px #fff; }
+            50% { color: #f1c40f; text-shadow: 0 0 15px #f1c40f; }
+        }
+
+        .close-btn {
+            margin-top: 12px;
+            font-size: 0.35rem;
+            cursor: pointer;
+            text-decoration: underline;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="bgCanvas"></canvas>
+    <div class="snow-ground"></div>
+    <div class="watermark">made by sera</div>
+
+    <div class="container" id="mainUI">
+        <h1>SELAMAT NATAL 2025<br>& TAHUN BARU 2026</h1>
+        <p class="instruction">
+            Maaf ya telat hehe, ini hadiah buat kamu!<br>Coba klik kadonya...
+        </p>
+
+        <div class="scene">
+            <div class="tree">🎄</div>
+            <div class="gift-pile">
+                <div class="gift" onclick="bukaInputKode()">🎁</div>
+                <div class="gift" onclick="bukaInputKode()">🎁</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Input -->
+    <div class="modal" id="modalKode">
+        <div class="modal-content">
+            <h2 style="font-size: 0.5rem; color:#f1c40f">KODE AKSES?</h2>
+            <p class="hint">Hint: nama grup tapi disingkat + 25 (jangan spasi ya!)</p>
+            <input type="text" id="inputKode" placeholder="KODE...">
+            <button class="btn-open" onclick="cekKode()">BUKA KADO</button>
+            <p class="close-btn" style="color:white" onclick="tutupModal()">[ Batal ]</p>
+        </div>
+    </div>
+
+    <!-- Surprise Area -->
+    <div id="surprise-area">
+        <div id="capture-area" style="background:rgba(236, 240, 241, 0); padding: 5px;">
+            <h2 id="surprise-title" style="font-size:0.5rem; margin-bottom: 5px;"></h2>
+            <div class="digital-art-container" id="surprise-gif"></div>
+            <p id="surprise-text" style="font-size:0.35rem; line-height:1.6; margin-top:8px;"></p>
+        </div>
+        
+        <div class="action-buttons">
+            <button class="btn-action btn-ss" onclick="takeScreenshot()">SCREENSHOT</button>
+            <button class="btn-action btn-share" onclick="shareApp()">SHARE</button>
+        </div>
+        <div class="close-btn" onclick="tutupKejutan()">[ Tutup ]</div>
+    </div>
+
+    <script>
+        const audioLagu = new Audio('musik.mp3');
+        audioLagu.loop = true;
+
+        function bukaInputKode() {
+            document.getElementById('modalKode').style.display = 'flex';
+            document.getElementById('inputKode').focus();
+        }
+
+        function tutupModal() {
+            document.getElementById('modalKode').style.display = 'none';
+        }
+
+        function tutupKejutan() {
+            document.getElementById('surprise-area').style.display = 'none';
+            document.getElementById('mainUI').style.opacity = '1';
+        }
+
+        function cekKode() {
+            const kode = document.getElementById('inputKode').value.toLowerCase();
+            const surpriseText = "ini hadiah dari akuu, hope u like it (effort bikinnya hehe) ^^";
+
+            audioLagu.play().catch(() => {});
+
+            if (kode === "gtg25") {
+                tampilkanArt("TARAA~ SEMOGA SUKA.", surpriseText, "https://via.placeholder.com/500x500?text=Karya+Art+Sera");
+            } 
+            else if (kode === "mtg25") {
+                tampilkanArt("TARAA~ SEMOGA SUKA.", surpriseText, "https://via.placeholder.com/500x500?text=Digital+Art+Sera+2");
+            } 
+            else {
+                alert("Kodenya salah! Cek lagi singkatan grupnya ya.");
+            }
+        }
+
+        function tampilkanArt(t, txt, imgUrl) {
+            document.getElementById('surprise-title').innerText = t;
+            document.getElementById('surprise-text').innerText = txt;
+            document.getElementById('surprise-gif').innerHTML = `<img src="${imgUrl}" crossorigin="anonymous">`;
+            
+            tutupModal();
+            // Container utama dibuat agak transparan agar fokus ke popup tapi tetap kelihatan latarnya
+            document.getElementById('mainUI').style.opacity = '0.2';
+            document.getElementById('surprise-area').style.display = 'block';
+            for(let i=0; i<8; i++) setTimeout(createFirework, i * 250);
+        }
+
+        async function takeScreenshot() {
+            const area = document.getElementById('surprise-area');
+            // Menghilangkan tombol sementara untuk screenshot bersih
+            const btns = document.querySelector('.action-buttons');
+            const close = document.querySelector('#surprise-area .close-btn');
+            btns.style.display = 'none';
+            close.style.display = 'none';
+
+            const canvasSS = await html2canvas(document.body, { 
+                useCORS: true,
+                backgroundColor: null 
+            });
+            
+            btns.style.display = 'flex';
+            close.style.display = 'block';
+
+            const link = document.createElement('a');
+            link.download = 'hadiah-natal-sera.png';
+            link.href = canvasSS.toDataURL();
+            link.click();
+        }
+
+        function shareApp() {
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Hadiah Natal dari Sera',
+                    text: 'Lihat hadiah natal pixel art keren ini!',
+                    url: window.location.href
+                }).catch(console.error);
+            } else {
+                alert("Browser kamu tidak mendukung fitur share. Gunakan screenshot ya!");
+            }
+        }
+
+        const canvas = document.getElementById('bgCanvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        let snowflakes = [];
+
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            initSnow();
+        }
+        window.addEventListener('resize', resize);
+
+        function initSnow() {
+            snowflakes = [];
+            for (let i = 0; i < 120; i++) {
+                snowflakes.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    r: Math.random() * 4 + 1,
+                    speed: Math.random() * 1 + 0.5
+                });
+            }
+        }
+
+        class PixelFirework {
+            constructor(x, y, color) {
+                this.x = x; this.y = y; this.color = color;
+                this.velocity = { x: (Math.random() - 0.5) * 10, y: (Math.random() - 0.5) * 10 };
+                this.life = 100;
+            }
+            draw() {
+                ctx.fillStyle = this.color;
+                ctx.fillRect(this.x, this.y, 4, 4);
+            }
+            update() {
+                this.x += this.velocity.x;
+                this.y += this.velocity.y;
+                this.velocity.y += 0.15;
+                this.life -= 2;
+            }
+        }
+
+        function createFirework() {
+            const x = Math.random() * canvas.width;
+            const y = Math.random() * (canvas.height * 0.5);
+            const color = `hsl(${Math.random() * 360}, 100%, 70%)`;
+            for (let i = 0; i < 25; i++) particles.push(new PixelFirework(x, y, color));
+        }
+
+        function animate() {
+            ctx.fillStyle = 'rgba(0, 12, 24, 0.3)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.fillStyle = 'white';
+            snowflakes.forEach(s => {
+                ctx.fillRect(s.x, s.y, s.r, s.r);
+                s.y += s.speed;
+                if (s.y > canvas.height) s.y = -10;
+            });
+
+            particles.forEach((p, i) => {
+                if (p.life > 0) { p.update(); p.draw(); }
+                else particles.splice(i, 1);
+            });
+
+            if (Math.random() < 0.02) createFirework();
+            requestAnimationFrame(animate);
+        }
+
+        resize();
+        animate();
+    </script>
+</body>
+</html>
