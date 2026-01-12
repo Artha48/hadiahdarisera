@@ -1,8 +1,21 @@
-// Lagu latar baru
+// Konfigurasi Audio
 const audioLagu = new Audio('natal_lofi.mp3');
 audioLagu.loop = true;
+let musicStarted = false;
+
+// Fungsi untuk memutar musik pada interaksi pertama
+function playMusicOnce() {
+    if (!musicStarted) {
+        audioLagu.play().then(() => {
+            musicStarted = true;
+        }).catch(err => {
+            console.log("Menunggu interaksi pengguna untuk memutar audio.");
+        });
+    }
+}
 
 function bukaInputKode() {
+    playMusicOnce();
     document.getElementById('modalKode').style.display = 'flex';
     document.getElementById('inputKode').focus();
 }
@@ -20,8 +33,7 @@ function cekKode() {
     const kode = document.getElementById('inputKode').value.toLowerCase();
     const surpriseText = "ini hadiah dari akuu, hope u like it (effort bikinnya hehe) ^^";
 
-    // Play musik saat tombol ditekan
-    audioLagu.play().catch(() => {});
+    playMusicOnce();
 
     if (kode === "gtg25") {
         tampilkanArt("UNTUK GTG!", surpriseText, "placeholder_gtg.png");
@@ -41,39 +53,48 @@ function tampilkanArt(t, txt, fileUrl, isVideo = false) {
     document.getElementById('surprise-title').innerText = t;
     document.getElementById('surprise-text').innerText = txt;
     
+    const artContainer = document.getElementById('surprise-gif');
     if (isVideo) {
-        document.getElementById('surprise-gif').innerHTML = `<video src="${fileUrl}" autoplay loop muted playsinline></video>`;
+        artContainer.innerHTML = `<video src="${fileUrl}" autoplay loop muted playsinline></video>`;
     } else {
-        document.getElementById('surprise-gif').innerHTML = `<img src="${fileUrl}" crossorigin="anonymous">`;
+        artContainer.innerHTML = `<img src="${fileUrl}" crossorigin="anonymous">`;
     }
     
     tutupModal();
     document.getElementById('mainUI').style.opacity = '0.1';
     document.getElementById('surprise-area').style.display = 'block';
-    // Pesta kembang api
+    
+    // Trigger kembang api
     for(let i=0; i<8; i++) setTimeout(createFirework, i * 250);
 }
 
+// Fitur Screenshot
 async function takeScreenshot() {
     const btns = document.querySelector('.action-buttons');
     const close = document.querySelector('#surprise-area .close-btn');
+    
     btns.style.display = 'none';
     close.style.display = 'none';
 
-    const canvasSS = await html2canvas(document.body, { 
-        useCORS: true,
-        backgroundColor: null 
-    });
-    
-    btns.style.display = 'flex';
-    close.style.display = 'block';
-
-    const link = document.createElement('a');
-    link.download = 'hadiah-natal-sera.png';
-    link.href = canvasSS.toDataURL();
-    link.click();
+    try {
+        const canvasSS = await html2canvas(document.body, { 
+            useCORS: true,
+            backgroundColor: null 
+        });
+        
+        const link = document.createElement('a');
+        link.download = 'hadiah-natal-sera.png';
+        link.href = canvasSS.toDataURL();
+        link.click();
+    } catch (e) {
+        console.error("Gagal mengambil screenshot", e);
+    } finally {
+        btns.style.display = 'flex';
+        close.style.display = 'block';
+    }
 }
 
+// Fitur Share
 function shareApp() {
     if (navigator.share) {
         navigator.share({
@@ -86,7 +107,7 @@ function shareApp() {
     }
 }
 
-// Efek Background (Salju & Kembang Api)
+// Logika Canvas (Salju & Kembang Api)
 const canvas = document.getElementById('bgCanvas');
 const ctx = canvas.getContext('2d');
 let particles = [];
@@ -139,6 +160,7 @@ function createFirework() {
 function animate() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+    // Render Salju
     ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
     snowflakes.forEach(s => {
         ctx.fillRect(s.x, s.y, s.r, s.r);
@@ -146,6 +168,7 @@ function animate() {
         if (s.y > canvas.height) s.y = -10;
     });
 
+    // Render Kembang Api
     particles.forEach((p, i) => {
         if (p.life > 0) { p.update(); p.draw(); }
         else particles.splice(i, 1);
@@ -155,5 +178,6 @@ function animate() {
     requestAnimationFrame(animate);
 }
 
+// Inisialisasi
 resize();
 animate();
