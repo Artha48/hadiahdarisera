@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pixel Christmas Art 🎄</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <canvas id="bgCanvas"></canvas>
+    <div class="watermark">made by sera</div>
+
+    <div class="container" id="mainUI">
+        <h1>SELAMAT NATAL 2025<br>& TAHUN BARU 2026</h1>
+        <p class="instruction">
+            Maaf ya telat hehe, ini hadiah buat kamu!<br>Coba klik hadiah di bawah...
+        </p>
+    </div>
+
+    <div class="touch-zone" onclick="bukaInputKode()"></div>
+
+    <div class="modal" id="modalKode">
+        <div class="modal-content">
+            <h2 style="font-size: 0.5rem; color:#f1c40f">KODE AKSES?</h2>
+            <p style="font-size:0.35rem; color:#bdc3c7; margin: 10px 0;">Hint: Singkatan + 25</p>
+            <input type="text" id="inputKode" placeholder="KODE...">
+            <button class="btn-open" onclick="cekKode()">BUKA KADO</button>
+            <p class="close-btn" style="color:white" onclick="tutupModal()">[ Batal ]</p>
+        </div>
+    </div>
+
+    <div id="surprise-area">
+        <div id="capture-area" style="background:transparent; padding: 5px;">
+            <h2 id="surprise-title" style="font-size:0.5rem; margin-bottom: 5px;"></h2>
+            <div class="digital-art-container" id="surprise-gif"></div>
+            <p id="surprise-text" style="font-size:0.35rem; line-height:1.6; margin-top:8px;"></p>
+        </div>
+        
+        <div class="action-buttons">
+            <button class="btn-action btn-ss" onclick="takeScreenshot()">SCREENSHOT</button>
+            <button class="btn-action btn-share" onclick="shareApp()">SHARE</button>
+        </div>
+        <div class="close-btn" onclick="tutupKejutan()">[ Tutup ]</div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
