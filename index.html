@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pixel Christmas Art 🎄</title>
+    <title>Hadiah dari sera 🎄</title>
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <link rel="stylesheet" href="style.css">
@@ -24,16 +24,21 @@
 
     <div class="modal" id="modalKode">
         <div class="modal-content">
-            <h2 style="font-size: 0.5rem; color:#f1c40f">KODE AKSES?</h2>
-            <p style="font-size:0.35rem; color:#bdc3c7; margin: 10px 0;">Hint: Singkatan + 25</p>
+            <h2 style="font-size: 0.5rem; color:#f1c40f; margin-bottom: 20px;">HALO!</h2>
+            
+            <label class="modal-label">NAMA KAMU:</label>
+            <input type="text" id="inputNama" placeholder="NAMA..." required>
+            
+            <label class="modal-label">KODE AKSES:</label>
             <input type="text" id="inputKode" placeholder="KODE...">
+            
             <button class="btn-open" onclick="cekKode()">BUKA KADO</button>
             <p class="close-btn" style="color:white" onclick="tutupModal()">[ Batal ]</p>
         </div>
     </div>
 
     <div id="surprise-area">
-        <div id="capture-area" style="background:transparent; padding: 5px;">
+        <div id="capture-area" style="background:white; padding: 5px;">
             <h2 id="surprise-title" style="font-size:0.5rem; margin-bottom: 5px;"></h2>
             <div class="digital-art-container" id="surprise-gif"></div>
             <p id="surprise-text" style="font-size:0.35rem; line-height:1.6; margin-top:8px;"></p>
@@ -42,7 +47,14 @@
         <div class="action-buttons">
             <button class="btn-action btn-ss" onclick="takeScreenshot()">SCREENSHOT</button>
             <button class="btn-action btn-share" onclick="shareApp()">SHARE</button>
+            <button class="btn-action btn-dl" onclick="toggleDownloadList()">DOWNLOAD CHARACTER ART</button>
         </div>
+
+        <div id="download-list">
+            <p style="font-size: 0.3rem; margin-bottom: 5px;">Pilih Karakter:</p>
+            <div id="list-items"></div>
+        </div>
+
         <div class="close-btn" onclick="tutupKejutan()">[ Tutup ]</div>
     </div>
 
