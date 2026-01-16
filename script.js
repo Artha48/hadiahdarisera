@@ -51,11 +51,11 @@ function cekKode() {
         currentGroup = kode;
         let title = "UNTUK " + nama.toUpperCase();
         
-        // Logika file (Seli/Lina mendapat video)
-        let file = (kode === "lise25") ? "lina_ser.mp4" : "placeholder_group.png";
-        let isVideo = (kode === "lise25");
+        // Logika file video otomatis berdasarkan nama kode
+        // Contoh: jika kode 'gtg25', maka file 'gtg25.mp4'
+        let fileVideo = kode + ".mp4"; 
 
-        tampilkanArt(title, surpriseText, file, isVideo);
+        tampilkanArt(title, surpriseText, fileVideo, true);
         setupDownloadList(kode);
     } else {
         alert("Kode salah! Coba cek petunjuknya lagi ya.");
@@ -71,7 +71,7 @@ function setupDownloadList(kode) {
         const link = document.createElement('a');
         link.className = "dl-item";
         link.innerText = "Download " + name;
-        link.href = name + "_art.png"; // Pastikan file gambar ini ada
+        link.href = name + "_art.png"; 
         link.download = name + "_pixel_art.png";
         container.appendChild(link);
     });
@@ -95,11 +95,10 @@ function tampilkanArt(t, txt, fileUrl, isVideo = false) {
     document.getElementById('mainUI').style.opacity = '0.1';
     document.getElementById('surprise-area').style.display = 'block';
     
-    // Efek kembang api
     for(let i=0; i<8; i++) setTimeout(createFirework, i * 250);
 }
 
-// Screenshot Handler
+// Fitur Screenshot
 async function takeScreenshot(isForSharing = false) {
     const btns = document.querySelector('.action-buttons');
     const close = document.querySelector('#surprise-area .close-btn');
@@ -125,7 +124,7 @@ async function takeScreenshot(isForSharing = false) {
     link.click();
 }
 
-// Share Handler
+// Fitur Share
 async function shareApp() {
     try {
         const imageDataUrl = await takeScreenshot(true);
@@ -145,7 +144,6 @@ async function shareApp() {
                 url: window.location.href
             });
         } else {
-            // Fallback copy link
             const dummy = document.createElement('input');
             document.body.appendChild(dummy);
             dummy.value = window.location.href;
@@ -211,7 +209,6 @@ function createFirework() {
 function animate() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     
-    // Snow
     ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
     snowflakes.forEach(s => { 
         ctx.fillRect(s.x, s.y, s.r, s.r); 
@@ -219,7 +216,6 @@ function animate() {
         if (s.y > canvas.height) s.y = -5; 
     });
     
-    // Fireworks
     particles.forEach((p, i) => { 
         if (p.life > 0) { p.update(); p.draw(); } 
         else particles.splice(i, 1); 
